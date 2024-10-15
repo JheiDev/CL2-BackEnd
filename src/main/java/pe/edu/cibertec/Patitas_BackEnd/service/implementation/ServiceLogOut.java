@@ -18,22 +18,25 @@ public class ServiceLogOut {
 
     private static final String path = "src/main/resources/LogOut.csv";
 
-    public LogOutResponseDTO cerrarSesion(LogOutRequestDTO logoutRequestDTO) {
+    public LogOutResponseDTO cerrarSesion(LoginRequestDTO logoutRequestDTO) throws IOException {
         try {
-            userLogout(logoutRequestDTO); // Registra el cierre de sesión
+            userLogout(logoutRequestDTO);
             return new LogOutResponseDTO("00", "Cierre de sesión exitoso");
         } catch (IOException e) {
             return new LogOutResponseDTO("99", "Error al cerrar sesión");
         }
     }
 
-    // Ajusta el método `userLogout` para que acepte `LogoutRequestDTO`
-    private void userLogout(LogOutRequestDTO logoutRequestDTO) throws IOException {
+
+    public void userLogout(LoginRequestDTO logoutRequestDTO) throws IOException {
         File file = new File(path);
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, true))) {
             bw.write(logoutRequestDTO.tipoDocumento() + ";" + logoutRequestDTO.numeroDocumento() + ";" + LocalDate.now() + "\n");
+        } catch (IOException e) {
+            throw new IOException("Error al escribir en LogOut.csv", e);
         }
     }
 }
+
 
 
